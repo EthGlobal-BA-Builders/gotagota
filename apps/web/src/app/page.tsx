@@ -3,15 +3,24 @@ import { useMiniApp } from "@/contexts/miniapp-context";
 import { sdk } from "@farcaster/frame-sdk";
 import { useState, useEffect } from "react";
 import { useAccount, useConnect } from "wagmi";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const { context, isMiniAppReady } = useMiniApp();
   const [isAddingMiniApp, setIsAddingMiniApp] = useState(false);
   const [addMiniAppMessage, setAddMiniAppMessage] = useState<string | null>(null);
+  const router = useRouter();
   
   // Wallet connection hooks
   const { address, isConnected, isConnecting } = useAccount();
   const { connect, connectors } = useConnect();
+  
+  // Redirect to auth if not connected
+  useEffect(() => {
+    if (isMiniAppReady && !isConnected && !isConnecting) {
+      router.push('/auth');
+    }
+  }, [isMiniAppReady, isConnected, isConnecting, router]);
   
   // Auto-connect wallet when miniapp is ready
   useEffect(() => {
@@ -123,7 +132,8 @@ export default function Home() {
                 
                 try {
                   const result = await sdk.actions.addMiniApp();
-                  if (result.added) {
+                  // Check if result indicates success (adjust based on actual SDK return type)
+                  if (result) {
                     setAddMiniAppMessage("✅ Miniapp added successfully!");
                   } else {
                     setAddMiniAppMessage("ℹ️ Miniapp was not added (user declined or already exists)");

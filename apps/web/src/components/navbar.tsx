@@ -14,6 +14,10 @@ import {
 
 const navLinks = [
   { name: "Home", href: "/" },
+  { name: "Auth", href: "/auth" },
+  { name: "Import", href: "/import" },
+  { name: "Metrics", href: "/metrics" },
+  { name: "Claim", href: "/claim" },
   { name: "Docs", href: "https://docs.celo.org", external: true },
 ]
 
